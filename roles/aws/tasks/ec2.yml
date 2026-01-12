@@ -1,0 +1,37 @@
+---
+- name: Create EC2 Instance
+  amazon.aws.ec2_instance:
+    name: "{{ inventory_hostname }}"
+    region: "{{ aws_region }}"
+    instance_type: "{{ aws_instance_type }}"
+    image_id: "{{ aws_image_id }}"
+    key_name: "{{ aws_key_pair }}"
+    security_groups: "{{ aws_security_group_id }}"
+    wait: true
+    exact_count: 1
+    tags:
+      Environment: "{{ aws_tag_environment }}"
+      Role: "{{ aws_tag_role }}"
+      Snapshot: "{{ aws_tag_snapshot }}"
+    volumes:
+      - device_name: /dev/xvda
+        ebs:
+          volume_size: "{{ aws_volume_size }}"
+          volume_type: gp3
+          delete_on_termination: true
+  register: aws_ec2_result
+
+- name: Tag root volume
+  amazon.aws.ec2_tag:
+    region: "{{ aws_region }}"
+    resource: "{{ aws_ec2_result.instances[0].block_device_mappings[0].\
+                  ebs.volume_id }}"
+    tags:
+      Name: "{{ inventory_hostname }}-root"
+
+- name: Show EC2 Instance Information
+  ansible.builtin.debug:
+    msg:
+      - "EC2 Public IP: {{ aws_ec2_result.instances[0].public_ip_address }}"
+      - "Private IP: {{ aws_ec2_result.instances[0].private_ip_address }}"
+  when: not ansible_check_mode

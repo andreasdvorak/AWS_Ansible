@@ -1,0 +1,4 @@
+---
+- name: Run ec2 tasks
+  ansible.builtin.import_tasks:
+    file: ec2.yml

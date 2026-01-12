@@ -1,0 +1,12 @@
+---
+aws_region: "eu-central-1"
+aws_instance_type: "t3.micro"
+aws_key_pair: "MyKeyPair"
+aws_security_group_id:
+  - sg-007c4d152a6a96ad6
+  - sg-03440fa427203b731
+aws_image_id: "ami-00ebb2b898eebe380"
+aws_tag_snapshot: "true"
+aws_tag_environment: "Test"
+aws_tag_role: "DevOps"
+aws_volume_size: 10

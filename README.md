@@ -33,7 +33,7 @@ create a virtual environment
 
 ```
 pip3 install virtualenv
-
+```
 
 create a virtual environment
 ```
@@ -55,13 +55,9 @@ python -m pip install -r requirements.txt
 # Ansible Preparation
 Installation of AWS collection, but it should be installed by default.
 
+Installation of Ansible collections
 ```
-ansible-galaxy collection install azure.azcollection -p collections --force
-```
-
-Installation of requirements for the collection
-```
-pip install -r ./collections/ansible_collections/azure/azcollection/requirements.txt
+ansible-galaxy collection install -r requirements.yml --collections-path ./collections
 ```
 
 List collections
@@ -80,3 +76,30 @@ yamllint inventory playbooks roles
 ```
 ansible-lint inventory playbooks roles
 ```
+
+# Ansible execution
+Check variables of localhost
+```
+ansible-inventory --host localhost
+```
+
+Check variables of testvm1
+```
+ansible-inventory --list
+```
+
+Run
+```
+ansible-playbook ./playbooks/aws.yml [--check] [--diff]
+```
+
+# Default login user
+The default login user depends on the used AMI OS.
+
+| OS | User |
+|----------|----------|
+| Amazon Linux  | ec2-user  |
+| Ubuntu  | ubuntu  |
+| Debian  | admin or debian |
+| CentOS  | centos |
+| RHEL    | ec2-user |

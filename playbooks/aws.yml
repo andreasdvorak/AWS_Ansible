@@ -1,0 +1,7 @@
+---
+- name: Playbook to set up AWS
+  hosts: aws
+  connection: local
+  gather_facts: false
+  roles:
+    - aws
