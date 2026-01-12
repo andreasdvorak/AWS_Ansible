@@ -1,14 +1,39 @@
 ---
-- name: Create EC2 Instance
+- name: Find AMI id
+  amazon.aws.ec2_ami_info:
+    region: "{{ aws_region }}"
+    owners: ["{{ aws_image_owner }}"]
+    filters:
+      name: "{{ aws_image_filter_name }}"
+      virtualization-type: hvm
+      root-device-type: ebs
+  register: aws_ami_id_result
+  when: aws_image_id is not defined
+
+- name: Set latest AMI-ID as variable
+  ansible.builtin.set_fact:
+    aws_image_id: "{{ (aws_ami_id_result.images | sort(attribute='creation_date') | last).image_id }}"
+  when: aws_image_id is not defined
+
+- name: Show found AMIs
+  ansible.builtin.debug:
+    msg: "Latest: {{ aws_image_id }}"
+
+- name: Create EC2 Instance {{ inventory_hostname }}
   amazon.aws.ec2_instance:
     name: "{{ inventory_hostname }}"
     region: "{{ aws_region }}"
     instance_type: "{{ aws_instance_type }}"
     image_id: "{{ aws_image_id }}"
     key_name: "{{ aws_key_pair }}"
-    security_groups: "{{ aws_security_group_id }}"
+    security_groups: "{{ aws_security_group_ids }}"
+    state: "{{ aws_ec2_state | default('present') }}"
+    vpc_subnet_id: "{{ aws_subnet_id | default(omit) }}"
     wait: true
     exact_count: 1
+    instance_initiated_shutdown_behavior: "stop"
+    network_interfaces:
+      - assign_public_ip: {{ aws_assign_public_ip }}
     tags:
       Environment: "{{ aws_tag_environment }}"
       Role: "{{ aws_tag_role }}"
