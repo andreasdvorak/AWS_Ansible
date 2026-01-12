@@ -1,0 +1,25 @@
+# Ansible roles and collections cache
+.ansible
+*.retry
+*.log
+*.tmp
+*.bak
+collections
+.azure/
+inventory
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.code-workspace
+
+# SSH keys (niemals ins Repo!)
+*.pem
+*.key
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
