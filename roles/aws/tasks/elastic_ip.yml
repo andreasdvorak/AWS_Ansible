@@ -1,17 +1,16 @@
 ---
-- name: Allocate Elastic IP
+- name: Manage Elastic IP for Instance
   amazon.aws.ec2_eip:
     region: "{{ aws_region }}"
-    state: "{{ aws_eip_state | default('absent') }}"
-    in_vpc: true
-  register: aws_eip_result
-
-- name: Associate Elastic IP with EC2
-  amazon.aws.ec2_eip:
-    region: "{{ aws_region }}"
-    state: "{{ aws_eip_state | default('absent') }}"
-    allocation_id: "{{ aws_eip_result.allocation_id }}"
     device_id: "{{ aws_ec2_result.instances[0].instance_id }}"
+    state: "{{ aws_assign_elastic_ip }}"
+    release_on_disassociation: false
+    reuse_existing_ip_allowed: true
+    in_vpc: true
+    tags:
+      Name: "EIP-{{ aws_ec2_result.instances[0].tags.Name | default('my-instance') }}"
+  register: aws_eip_result
+  when: aws_ec2_result.instances is defined
 
 - name: Show Elastic IP
   ansible.builtin.debug:

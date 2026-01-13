@@ -10,5 +10,6 @@ aws_tag_environment: "Test"
 aws_tag_role: "DevOps"
 aws_volume_size: 10
 aws_vpc_id: "vpc-0a9de6337ea6dd6c3"
-aws_subnet_id: "subnet-06d6d45fb7dd30a40"
+aws_subnet_id: subnet-06d6d45fb7dd30a40
 aws_assign_public_ip: true
+aws_assign_elastic_ip: "absent"
