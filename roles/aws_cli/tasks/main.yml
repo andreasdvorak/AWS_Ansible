@@ -1,0 +1,39 @@
+---
+- name: Load OS specific variables
+  ansible.builtin.include_vars: "{{ ansible_facts['ansible_system'] }}\
+                _{{ ansible_facts['ansible_machine'] }}.yml"
+
+- name: Check if AWS CLI is already installed
+  ansible.builtin.stat:
+    path: "{{ aws_cli_install_cmd }}"
+  register: aws_cli_stat
+
+- name: Download AWS CLI v2
+  ansible.builtin.get_url:
+    url: "{{ aws_cli_url }}"
+    dest: "{{ aws_cli_zip_destination }}"
+    mode: u+w,g+w
+  when: not aws_cli_stat.stat.exists
+
+- name: Unzip AWS CLI v2
+  ansible.builtin.unarchive:
+    src: "{{ aws_cli_zip_destination }}"
+    dest: "{{ aws_cli_extract_dir }}"
+    remote_src: true
+  when: not aws_cli_stat.stat.exists
+
+- name: Install AWS CLI v2
+  ansible.builtin.command:
+    cmd: "{{ aws_cli_install_cmd }}"
+    creates: "{{ aws_cli_install_cmd }}"
+  when: not aws_cli_stat.stat.exists
+
+- name: Clean up AWS CLI v2 zip file
+  ansible.builtin.file:
+    path: "{{ aws_cli_zip_destination }}"
+    state: absent
+
+- name: Clean up AWS CLI v2 extracted files
+  ansible.builtin.file:
+    path: "{{ aws_cli_extract_dir }}"
+    state: absent

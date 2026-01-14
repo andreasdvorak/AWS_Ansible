@@ -1,0 +1,74 @@
+---
+- name: Find AMI ID
+  amazon.aws.ec2_ami_info:
+    region: "{{ aws_provision_region }}"
+    owners: ["{{ aws_provision_image_owner }}"]
+    filters:
+      name: "{{ aws_provision_image_filter_name }}"
+      virtualization-type: hvm
+      root-device-type: ebs
+  register: aws_provision_ami_id_result
+  when: aws_provision_image_id is not defined
+
+- name: Set latest AMI-ID as variable
+  ansible.builtin.set_fact:
+    aws_provision_image_id: "{{ (aws_provision_ami_id_result.images | \
+                                sort(attribute='creation_date') | \
+                                last).image_id }}"
+  when: aws_provision_image_id is not defined
+- name: Show found AMIs
+  ansible.builtin.debug:
+    msg: "Latest: {{ aws_provision_image_id }}"
+
+- name: Create EC2 Instance {{ inventory_hostname }}
+  amazon.aws.ec2_instance:
+    name: "{{ inventory_hostname }}"
+    region: "{{ aws_provision_region }}"
+    instance_type: "{{ aws_provision_instance_type }}"
+    image_id: "{{ aws_provision_image_id }}"
+    key_name: "{{ aws_provision_key_pair }}"
+    state: "{{ aws_provision_ec2_state | default('present') }}"
+    wait: true
+    exact_count: 1
+    instance_initiated_shutdown_behavior: "stop"
+    security_groups: "{{ aws_provision_security_group_ids }}"
+    subnet_id: "{{ aws_provision_subnet_id }}"
+    network:
+      assign_public_ip: "{{ aws_provision_assign_public_ip }}"
+    tags:
+      Environment: "{{ aws_provision_tag_environment }}"
+      Role: "{{ aws_provision_tag_role }}"
+      Snapshot: "{{ aws_provision_tag_snapshot }}"
+    volumes:
+      - device_name: /dev/xvda
+        ebs:
+          volume_size: "{{ aws_provision_volume_size }}"
+          volume_type: gp3
+          delete_on_termination: true
+  register: aws_provision_ec2_result
+
+- name: Debug EC2 Result
+  ansible.builtin.debug:
+    var: aws_provision_ec2_result.instances[0].block_device_mappings
+- name: Tag all volumes of the instance
+  amazon.aws.ec2_tag:
+    region: "{{ aws_provision_region }}"
+    resource: "{{ item.ebs.volume_id }}"
+    tags:
+      Name: "{{ inventory_hostname }}-vol-{{ item.device_name | basename }}"
+      InstanceName: "{{ inventory_hostname }}"
+  loop: "{{ aws_provision_ec2_result.instances[0].block_device_mappings }}"
+  when:
+    - aws_provision_ec2_result.instances is defined
+    - item.ebs.volume_id is defined
+  loop_control:
+    label: "{{ item.device_name }}"
+
+- name: Show EC2 Instance Information
+  ansible.builtin.debug:
+    msg:
+      - "EC2 Public IP: {{ aws_provision_ec2_result.instances[0].\
+         public_ip_address }}"
+      - "Private IP: {{ aws_provision_ec2_result.instances[0].\
+         private_ip_address }}"
+  when: not ansible_check_mode

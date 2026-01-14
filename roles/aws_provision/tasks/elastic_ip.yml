@@ -1,0 +1,19 @@
+---
+- name: Manage Elastic IP for Instance
+  amazon.aws.ec2_eip:
+    region: "{{ aws_provision_region }}"
+    device_id: "{{ aws_provision_ec2_result.instances[0].instance_id }}"
+    state: "{{ aws_provision_assign_elastic_ip }}"
+    release_on_disassociation: false
+    reuse_existing_ip_allowed: true
+    in_vpc: true
+    tags:
+      Name: "EIP-{{ aws_provision_ec2_result.instances[0].tags.Name \
+             | default('my-instance') }}"
+  register: aws_provision_eip_result
+  when: aws_provision_ec2_result.instances is defined
+
+- name: Show Elastic IP
+  ansible.builtin.debug:
+    msg: "Elastic IP: {{ aws_provision_eip_result.public_ip }}"
+  when: not ansible_check_mode

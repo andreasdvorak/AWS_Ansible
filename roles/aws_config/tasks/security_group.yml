@@ -3,17 +3,17 @@
   amazon.aws.ec2_security_group:
     name: "ssh-security-group"
     description: "Security Group for SSH access"
-    vpc_id: "{{ aws_vpc_id }}"
+    vpc_id: "{{ aws_config_vpc_id }}"
     rules:
       - proto: tcp
         from_port: 22
         to_port: 22
         cidr_ip: 0.0.0.0/0      # Access from everywhere
-    state: "{{ aws_ssh_security_group_state | default('present') }}"
+    state: "{{ aws_config_ssh_security_group_state | default('present') }}"
     tags:
       Name: ssh-allow-all
-  register: aws_sg_result
+  register: aws_config_sg_result
 
 - name: Show created Security Group ID
   ansible.builtin.debug:
-    msg: "Security Group: {{ aws_sg_result.group_id }}"
+    msg: "Security Group: {{ aws_config_sg_result.group_id }}"

@@ -1,8 +1,4 @@
 ---
-- name: Run security_group tasks
-  ansible.builtin.import_tasks:
-    file: security_group.yml
-
 - name: Run ec2 tasks
   ansible.builtin.import_tasks:
     file: ec2.yml

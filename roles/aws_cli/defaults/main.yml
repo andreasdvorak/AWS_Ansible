@@ -1,0 +1,4 @@
+---
+aws_cli_extract_dir: "/tmp"
+aws_cli_install_cmd: "/tmp/aws/install"
+aws_cli_zip_destination: "/tmp/awscliv2.zip"

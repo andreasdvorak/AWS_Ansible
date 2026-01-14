@@ -1,4 +1,9 @@
-# Role to create an EC2 Instance
+# Role AWS provision
+This role is used for the administration of AWS.
+
+It can create
+* EC2 instances
+* elastic ip
 
 # Add EC2 instance
 Add the name of the new ec2_instance to the inventory group
@@ -21,3 +26,7 @@ aws_ec2_state: absent
 
 # ssh
 ssh -i <privat_key>.pem <osspecificuser>@<public_ip> -o IdentitiesOnly=yes
+
+# Parameter
+Change the parameter in the file defaults/main.yml or overwrite that in group_vars oder hosts_vars.
+

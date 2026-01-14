@@ -1,0 +1,4 @@
+---
+- name: Run security_group tasks
+  ansible.builtin.import_tasks:
+    file: security_group.yml

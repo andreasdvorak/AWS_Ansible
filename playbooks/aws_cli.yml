@@ -1,0 +1,6 @@
+---
+- name: Playbook to run AWS cli role
+  hosts: ansible
+  connection: local
+  roles:
+    - aws_cli

@@ -1,0 +1,15 @@
+---
+aws_provision_assign_public_ip: true
+aws_provision_assign_elastic_ip: "absent"
+aws_provision_instance_type: "t3.micro"
+aws_provision_key_pair: "MyKeyPair"
+aws_provision_region: "eu-central-1"
+aws_provision_security_group_ids:
+  - sg-007c4d152a6a96ad6  # default VPC security group
+  - sg-04692a26ae0bff936  # ssh-security-group
+aws_provision_subnet_id: subnet-06d6d45fb7dd30a40
+aws_provision_tag_snapshot: "present"
+aws_provision_tag_environment: "Test"
+aws_provision_tag_role: "DevOps"
+aws_provision_volume_size: 10
+aws_provision_vpc_id: "vpc-0a9de6337ea6dd6c3"
