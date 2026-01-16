@@ -1,1 +1,12 @@
 ---
+aws_provision_ami_owners:
+  amazon_linux: "137112412989"
+  ubuntu: "099720109477"
+  redhat: "309956199498"
+  debian: "136693071363"
+
+aws_provision_ami_filter:
+  amazon_linux: "amzn2-ami-hvm-*-x86_64-gp2"
+  ubuntu: "ubuntu/images/hvm-ssd/ubuntu-*-*-amd64-server-*"
+  redhat: "RHEL-*-HVM-*"
+  debian: "debian-*-amd64-*"

@@ -2,11 +2,9 @@
 - name: Find AMI ID
   amazon.aws.ec2_ami_info:
     region: "{{ aws_provision_region }}"
-    owners: ["{{ aws_provision_image_owner }}"]
+    owners: ["{{ aws_provision_ami_owners[aws_provision_os] }}"]
     filters:
-      name: "{{ aws_provision_image_filter_name }}"
-      virtualization-type: hvm
-      root-device-type: ebs
+      name: "{{ aws_provision_ami_filter[aws_provision_os] }}"
   register: aws_provision_ami_id_result
   when: aws_provision_image_id is not defined
 

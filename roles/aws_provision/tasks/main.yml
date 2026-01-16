@@ -2,7 +2,17 @@
 - name: Run ec2 tasks
   ansible.builtin.import_tasks:
     file: ec2.yml
+  tags:
+    - ec2
 
 - name: Run elastic_ip tasks
   ansible.builtin.import_tasks:
     file: elastic_ip.yml
+  tags:
+    - elastic_ip
+
+- name: Run s2_bucket tasks
+  ansible.builtin.import_tasks:
+    file: s3_bucket.yml
+  tags:
+    - s3_bucket

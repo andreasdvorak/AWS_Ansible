@@ -1,7 +1,7 @@
 ---
-- name: Playbook to run AWS configuration role
+- name: Playbook to run the AWS provision role
   hosts: aws
   connection: local
   gather_facts: false
   roles:
-    - aws_config
+    - aws_provision
