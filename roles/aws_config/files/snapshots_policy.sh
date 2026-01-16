@@ -5,7 +5,8 @@
 # Ref: https://docs.aws.amazon.com/cli/latest/reference/dlm/create-lifecycle-policy.html
 # When you get this error:
 # An error occurred (AccessDeniedException) when calling the CreateLifecyclePolicy operation: Cross-account pass role is not allowed.
-# create the policy in the AWS Console instead
+# I have no solution yet, but maybe you need to create and specify an execution role ARN
+
 
 ### variables
 aws_region="eu-central-1"
@@ -17,7 +18,7 @@ aws_snapshot_policy_retain_interval=7
 ### main
 aws dlm create-lifecycle-policy \
     --region "${aws_region}" \
-    --execution-role-arn "arn:aws:iam::123456789012:role/AWSDataLifecycleManagerDefaultRole" \
+    #--execution-role-arn "arn:aws:iam::123456789012:role/AWSDataLifecycleManagerDefaultRole" \
     --description "${aws_snapshot_policy_description}" \
     --state ENABLED \
     --policy-details "{

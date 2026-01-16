@@ -1,7 +1,8 @@
 ---
 - name: Load OS specific variables
-  ansible.builtin.include_vars: "{{ ansible_facts['ansible_system'] }}\
-                _{{ ansible_facts['ansible_machine'] }}.yml"
+  ansible.builtin.include_vars:
+    file:"{{ role_path }}/vars/{{ ansible_system }}\
+                _{{ ansible_machine }}.yml"
 
 - name: Check if AWS CLI is already installed
   ansible.builtin.stat:
